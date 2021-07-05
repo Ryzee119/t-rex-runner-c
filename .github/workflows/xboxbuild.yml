@@ -34,7 +34,7 @@ jobs:
       - name: Build
         env:
           NXDK_DIR: nxdk
-        run: make -j$(nproc)
+        run: make -f Makefile.nxdk NXDK_DIR=nxdk/ -j$(nproc)
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
