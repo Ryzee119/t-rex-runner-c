@@ -22,7 +22,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
 bool InitializeWindow(char* title, uint32_t width, uint32_t height) {
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0) {
         PrintSDLError();
         return false;
     }
@@ -94,7 +94,7 @@ bool CreateRenderer() {
     renderer = SDL_CreateRenderer(
             window,
             -1,
-            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+            SDL_RENDERER_SOFTWARE
     );
     if (renderer == NULL) {
         PrintSDLError();

@@ -1,0 +1,38 @@
+XBE_TITLE = T-Rex-Runner
+GEN_XISO = $(XBE_TITLE).iso
+
+NXDK_SDL = y
+
+SRCS +=	\
+		objects/clouds.c \
+		objects/distance_meter.c \
+		objects/game_over_panel.c \
+		objects/horizon_line.c \
+		objects/horizon.c \
+		objects/obstacle.c \
+		objects/t_rex.c \
+		sys/graphics.c \
+		sys/input.c \
+		sys/sounds.c \
+		sys/utilities.c \
+		sys/window.c \
+		game.c \
+		main.c \
+		spritesheet.c
+
+CFLAGS += \
+		-I$(CURDIR) \
+		-I$(CURDIR)xbox \
+		-O2 -Wall
+		
+include xbox/Makefile-SDL_mixer
+
+new_all: copy_resources all
+
+include $(NXDK_DIR)/Makefile
+
+copy_resources:
+	@mkdir -p $(OUTPUT_DIR)
+	@mkdir -p $(OUTPUT_DIR)/assets
+	@cp -r $(CURDIR)/assets/ $(OUTPUT_DIR)/
+	@cp $(CURDIR)/README.md $(OUTPUT_DIR)/LICENSE.txt

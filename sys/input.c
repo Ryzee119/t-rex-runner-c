@@ -6,6 +6,7 @@
 #include "input.h"
 
 bool keyboard[256] = {false};
+static SDL_GameController *pad = NULL;
 
 void (*key_up_callback)(char key) = NULL;
 
@@ -14,12 +15,54 @@ void PollEvents(void (*on_quit)()) {
     while (SDL_PollEvent(&event) != 0) {
         if (event.type == SDL_QUIT) on_quit();
 
-        if (event.type == SDL_KEYDOWN) {
-            const uint8_t key = event.key.keysym.sym;
-            keyboard[key] = true;
+        if (event.type == SDL_CONTROLLERDEVICEADDED)
+        {
+            SDL_GameController *new_pad = SDL_GameControllerOpen(event.cdevice.which);
+            if (pad == NULL)
+            {
+                pad = new_pad;
+            }
         }
-        if (event.type == SDL_KEYUP) {
-            const uint8_t key = event.key.keysym.sym;
+        else if (event.type == SDL_CONTROLLERDEVICEREMOVED)
+        {
+            if (pad == SDL_GameControllerFromInstanceID(event.cdevice.which))
+            {
+                pad = NULL;
+            }
+            SDL_GameControllerClose(SDL_GameControllerFromInstanceID(event.cdevice.which));
+        }
+        else if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+            if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+            {
+                keyboard[KEY_UP] = true;
+            }
+            else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+            {
+                keyboard[KEY_DOWN] = true;
+            }
+            else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+            {
+                keyboard[KEY_SPACE] = true;
+            }
+        }
+        else if (event.type == SDL_CONTROLLERBUTTONUP) {
+            uint8_t key;
+            if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+            {
+                key = KEY_UP;
+            }
+            else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+            {
+                key = KEY_DOWN;
+            }
+            else if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+            {
+                key = KEY_SPACE;
+            }
+            else
+            {
+                return;
+            }
             keyboard[key] = false;
             if (key_up_callback != NULL) {
                 key_up_callback(key);

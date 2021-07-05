@@ -8,6 +8,9 @@
 #include "sys/window.h"
 #include "sys/graphics.h"
 #include "sys/sounds.h"
+#ifdef NXDK
+#include <hal/video.h>
+#endif
 
 bool Initialize() {
     return InitializeWindow(
@@ -18,12 +21,12 @@ bool Initialize() {
 }
 
 bool LoadAssets() {
-    if (LoadTexture("assets/textures/spritesheet.png") == -1) {
+    if (LoadTexture("D:\\assets\\textures\\spritesheet.png") == -1) {
         return false;
     }
-    LoadSoundEffect("assets/sounds/sfx-hit.wav");
-    LoadSoundEffect("assets/sounds/sfx-press.wav");
-    LoadSoundEffect("assets/sounds/sfx-reached.wav");
+    LoadSoundEffect("D:\\assets\\sounds\\sfx-hit.wav");
+    LoadSoundEffect("D:\\assets\\sounds\\sfx-press.wav");
+    LoadSoundEffect("D:\\assets\\sounds\\sfx-reached.wav");
     return true;
 }
 
@@ -42,6 +45,9 @@ void FreeResources() {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef NXDK
+    XVideoSetMode(720, 480, 32, REFRESH_DEFAULT);
+#endif
     if (!Initialize() || !LoadAssets()) return -1;
 
     StartGame();
