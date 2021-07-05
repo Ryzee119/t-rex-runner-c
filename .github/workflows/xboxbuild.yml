@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+      - '.github/*'
+      - '.github/*_TEMPLATE/**'
+      - '*.md'
+  pull_request:
+    paths-ignore:
+      - '.github/*'
+      - '.github/*_TEMPLATE/**'
+      - '*.md'
+
+jobs:
+  ubuntu:
+    name: Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Tree
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Clone nxdk
+        uses: actions/checkout@v2
+        with:
+          repository: XboxDev/nxdk
+          path: nxdk
+          submodules: recursive
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flex bison clang lld llvm
+      - name: Build
+        env:
+          NXDK_DIR: nxdk
+        run: make -j$(nproc)
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: T-Rex-Runner
+          path: '*.iso'
+          if-no-files-found: error
