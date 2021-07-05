@@ -1,0 +1,3 @@
+[submodule "xbox/SDL_mixer"]
+	path = xbox/SDL_mixer
+	url = https://github.com/libsdl-org/SDL_mixer.git
